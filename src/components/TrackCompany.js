@@ -1,6 +1,23 @@
 import React from "react";
+import Grid from "@material-ui/core/Grid/Grid";
+import Paper from "@material-ui/core/Paper/Paper";
+import Button from "@material-ui/core/Button/Button"
+import TextField from "@material-ui/core/TextField/TextField";
+import {withStyles} from "@material-ui/styles";
 
-export default class TrackCompany extends React.Component {
+const styles = () => ({
+  paper: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-around",
+    padding: '1rem',
+    textAlign: 'center',
+    minHeight: "20vh",
+    margin: "2rem 0 0 0"
+  },
+});
+
+class TrackCompany extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -8,8 +25,7 @@ export default class TrackCompany extends React.Component {
     }
   }
 
-  handleSubmit = (event) => {
-    event.preventDefault();
+  handleSubmit = () => {
     const {searchedSymbol} = this.state;
     const symbolsSavedInLocalStorage = localStorage.getItem(searchedSymbol) === "true";
     if (!symbolsSavedInLocalStorage) {
@@ -25,19 +41,38 @@ export default class TrackCompany extends React.Component {
   };
 
   render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Company Symbol
-          <input type="text"
-                 placeholder="Company symbol"
-                 value={this.state.searchedSymbol}
-                 onChange={(event) => this.handleChange(event)}/>
-          <small> Provide the stock exchange symbol of a company you want to track </small>
-        </label>
-        <input type="submit"
-               value="Track"/>
-      </form>
-    )
+
+    const {classes} = this.props;
+    return (<Grid
+      container
+      direction="row"
+      justify="center"
+      alignItems="center">
+      <Grid item
+            xs={12}
+            sm={6}>
+        <Paper className={classes.paper}>
+
+
+            <TextField
+              id="outlined-name"
+              label="Company symbol"
+              value={this.state.searchedSymbol}
+              onChange={this.handleChange}
+              margin="normal"
+              variant="outlined"
+            />
+          <small> Provide the stock exchange symbol of a company you want to track</small>
+
+          <Button variant="contained"
+                    color="primary"
+                    onClick={this.handleSubmit}>Add </Button>
+
+
+        </Paper>
+      </Grid>
+    </Grid>)
   }
 };
+
+export default withStyles(styles)(TrackCompany);

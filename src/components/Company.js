@@ -1,7 +1,55 @@
 import React from "react";
+import {withStyles} from "@material-ui/styles";
 
+const styles = () => ({
+  logoWrapper: {
+    height: "64px",
+    width: "64px",
+  },
+  logo: {
+    height: "64px",
+    width: "64px",
+  },
+  content: {},
+  contentTitle: {},
+  locationDates: {},
+  stocks: {},
+  companyCard: {
+    maxHeight: "64px",
+    display: "flex",
+    alignItems: "center"
+  }
+});
 const Company = (props) => {
-  return (<pre>Header</pre>)
+  const {company, classes} = props;
+  console.error(company);
+  return (
+    <div className={classes.companyCard}>
+      <div className={classes.logoWrapper}>
+        <img className={classes.logo}
+             src={company.logo}/>
+      </div>
+      <div className={classes.content}>
+
+        <div className={classes.title}>
+          <b className={classes.contentTitle}>{company.name} </b>
+          <span> {company.symbol} </span>
+          <small>{company.domain}  </small>
+        </div>
+        <div className={classes.locationDates}>
+          <span> {company.region} </span>
+          <span> {company.tradingHours}</span>
+          <span> {company.timeZone} </span>
+        </div>
+        <div className={classes.stocks}>
+          <span> {company.close} </span>
+          <span> {company.difference} </span>
+          {company.closeDate && <span> Closed: </span>}
+        </div>
+      </div>
+    </div>
+
+  )
 };
 
-export default Company;
+export default withStyles(styles)(Company);

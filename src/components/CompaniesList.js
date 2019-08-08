@@ -1,61 +1,62 @@
-import React from "react";
+import React, {Component} from "react";
 import AlphaVantageService from "../services/alpha-vantage/index"
-import moment from "moment";
-import ClearBitService from "../services/clearbit";
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import PropTypes from "prop-types";
+import Company from "./Company";
+import {withStyles} from "@material-ui/styles";
 
-export default class CompaniesList extends React.Component {
+
+const styles = () => ({
+  paper: {
+    padding: '1rem',
+    textAlign: 'center',
+  },
+});
+
+class CompaniesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       companies: [],
-      currentDate: moment(new Date()).format("YYYY-MM-DD")
+      errorMessage: ""
     }
   }
 
-  async componentDidMount() {
-    const companies = [];
-    const localStorageSymbols = Object.keys(localStorage);
-
-    localStorageSymbols.forEach(async (symbol) => {
-      const mainInfoResponse = await AlphaVantageService.fetchCompanyFinancialDataFromStock(symbol);
-      const matchesData = mainInfoResponse.data.bestMatches && mainInfoResponse.data.bestMatches[0];
-      let companyData = {
-        symbol: matchesData["1. symbol"],
-        name: matchesData["2. name"],
-        region: matchesData["4. region"],
-        tradingHours: `${matchesData["5. marketOpen"]} ${matchesData["6.marketClose"]}`,
-        currency: matchesData["8. currency"],
-        timeZone: matchesData["7. timezone"]
-      };
-
-      const timeSeriesResponse = await AlphaVantageService.fetchCompanyDailyTimeSeries(symbol);
-      const timeSeriesData = timeSeriesResponse && timeSeriesResponse.data && timeSeriesResponse.data["Time Series (Daily)"];
-      companyData = {
-        ...companyData,
-        open: timeSeriesData[this.state.currentDate]["1. open"],
-        close: timeSeriesData[this.state.currentDate]["4. close"],
-        difference: timeSeriesData[this.state.currentDate]["4. close"] / timeSeriesData[this.state.currentDate]["1. open"]
-      };
-
-      const logoAndDomainResponse = await ClearBitService.fetchCompanyLogoAndDomain(matchesData["2. name"]);
-      companyData = {
-        ...companyData,
-        logo: logoAndDomainResponse.data.logo,
-        domain: logoAndDomainResponse.data.domain,
-      };
-
-      console.error(companyData);
-
-    });
-
+  componentDidMount() {
+    let companies = null;
+    try {
+      companies = AlphaVantageService.populateCompanyData();
+    } catch (e) {
+      this.setState({errorMessage:e.message})
+    }
+    this.setState({companies: companies});
+    console.error(this.state.companies);
   }
 
   render() {
-    return (<div>
-      {this.state.companies.map((company) => (
-        <p>{company.name}!</p>
-      ))}
-    </div>);
+    const {classes} = this.props;
+    return (<Grid
+      container
+      direction="row"
+      justify="center"
+      alignItems="center">
+      {this.state.companies && this.state.companies.map((company, index) => {
+        return (<Grid key={index}
+                      item
+                      xs={12}
+                      sm={3}>
+            <Company company={company}/>
+        </Grid>)
+      })}
+      {this.state.errorMessage}
+    </Grid>);
   }
 }
+
+CompaniesList.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(CompaniesList);
 

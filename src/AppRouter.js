@@ -3,13 +3,17 @@ import CompaniesList from "./components/CompaniesList";
 import TrackCompany from "./components/TrackCompany";
 // import saveSearchedSymbolsInLocalStorage from "./services/internal/index"
 import React from "react";
-
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
+import {withStyles} from '@material-ui/styles';
 
 const routes = [
   {
     path: "/",
     exact: true,
-    render: (props) => <CompaniesList {...props}/>,
+    render: (props) => <TrackCompany {...props}/>,
   },
   {
     path: "/track-company",
@@ -21,25 +25,37 @@ const routes = [
   }
 ];
 
+const styles = () => ({
+  root: {
+    display: "flex",
+    justifyContent: "space-between"
+  },
+  link: {
+    color: 'white',
+    textDecoration: 'none'
+  }
+});
 
-export const AppRouter = () => {
+const AppRouter = (props) => {
+  const {classes} = props;
   return (
+
     <Router>
       <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Stock Tracker</Link>
-            </li>
-            <li>
-              <Link to="/track-company/">Track my company</Link>
-            </li>
+        <AppBar className={classes.root} position="static">
+          <Toolbar>
+            <Button color="inherit">
+              <Link className={classes.link}
+                    to="/track-company">Track my company</Link></Button>
+            <div>
 
-            <li>
-              <Link to="/companies/">Companies</Link>
-            </li>
-          </ul>
-        </nav>
+            <Button>
+              <Link className={classes.link}
+                    to="/companies/">Companies</Link></Button>
+
+            </div>
+          </Toolbar>
+        </AppBar>
         {routes.map((route, index) => (
           <Route
             key={index}
@@ -50,5 +66,10 @@ export const AppRouter = () => {
       </div>
     </Router>
   )
-
 };
+
+AppRouter.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(AppRouter);
