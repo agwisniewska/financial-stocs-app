@@ -1,13 +1,11 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {AppRouter} from "./AppRouter";
 
-function App() {
+const App = (props) => {
   return (
-    <div className="App">
-
-    </div>
-  );
-}
+    <AppRouter/>
+  )
+};
 
 export default App;
