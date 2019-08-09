@@ -17,7 +17,9 @@ const styles = () => ({
   companyCard: {
     maxHeight: "64px",
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
+    width: "100%",
+    margin: "1rem 0",
   }
 });
 const Company = (props) => {
@@ -47,6 +49,7 @@ const Company = (props) => {
           {company.closeDate && <span> Closed: </span>}
         </div>
       </div>
+      <span onClick={() => props.deleteCompany(company)}>x</span>
     </div>
 
   )

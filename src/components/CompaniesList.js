@@ -34,6 +34,12 @@ class CompaniesList extends Component {
     console.error(this.state.companies);
   }
 
+  deleteCompany = (value) => {
+    const filteredCompanies = this.state.companies.filter(company => company.symbol !== value.symbol);
+    this.setState({companies: filteredCompanies});
+    localStorage.removeItem(value.symbol);
+  };
+
   render() {
     const {classes} = this.props;
     return (<Grid
@@ -46,7 +52,7 @@ class CompaniesList extends Component {
                       item
                       xs={12}
                       sm={3}>
-            <Company company={company}/>
+            <Company deleteCompany={this.deleteCompany} company={company}/>
         </Grid>)
       })}
       {this.state.errorMessage}
