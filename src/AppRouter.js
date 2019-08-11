@@ -12,15 +12,15 @@ const routes = [
   {
     path: "/",
     exact: true,
-    render: (props) => <TrackCompany {...props}/>,
+    render: (props) => <TrackCompany {...props}  key={Math.random()}/>,
   },
   {
     path: "/track-company",
-    render: (props) => <TrackCompany {...props}/>
+    render: (props) => <TrackCompany {...props} key={Math.random()}/>
   },
   {
     path: "/companies",
-    render: (props) => <CompaniesList {...props}/>,
+    render: (props) => <CompaniesList {...props} key={Math.random()}/>,
   }
 ];
 

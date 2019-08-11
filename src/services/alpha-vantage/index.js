@@ -4,7 +4,7 @@ import ExtractData from "./extractData";
 import extractCompanyLogoAndDomain from "../clearbit/extractData";
 import moment from "moment";
 
-const API_KEY = '8QRXF51LC7X7XHDM';
+const API_KEY = '8QRXF51LC7X7XHDMS789';
 const API_URL = 'https://www.alphavantage.co/';
 
 const AlphaVantageService = {
@@ -16,57 +16,57 @@ const AlphaVantageService = {
     return axios.get(`${API_URL}query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`);
   },
 
-  populateCompanyData: () => {
-    const companies = [];
-    const localStorageSymbols = Object.keys(localStorage).filter(key => key !== "");
-    let mainInfoResponse;
-    let timeSeriesResponse;
-    let logoAndDomainResponse;
-    let mainInfoExtractedData;
-    let timeSeriesExtractedData;
-    let logoAndDomainExtractedData;
-    let name;
+  populateCompanyData: async () => {
+    const localStorageSymbols = Object.keys(localStorage);
+
+    let companies = [];
 
     localStorageSymbols.forEach(async (symbol) => {
+      let mainInfoExtractedData = null;
+      let timeSeriesExtractedData = null;
+      let logoAndDomainExtractedData = null;
+      let mainInfoResponse = null;
+      let timeSeriesResponse = null;
+      let logoAndDomainResponse = null;
       const formattedSymbol = symbol.toUpperCase();
+      let companyData = null;
+      let name;
       try {
         mainInfoResponse = await AlphaVantageService.fetchCompanyFinancialDataFromStock(formattedSymbol);
-        if (mainInfoResponse) {
+        if (mainInfoResponse.data && !mainInfoResponse.data.hasOwnProperty("Note")) {
           mainInfoExtractedData = ExtractData.extractMainCompanyInformation(mainInfoResponse);
-          mainInfoExtractedData.name.replace(" L.P. ", "").replace("Inc.", "");
+          const date = moment(new Date()).format("YYYY-MM-DD");
+          companyData = {date, ...mainInfoExtractedData};
+          name = mainInfoExtractedData.name.replace(" L.P. ", "").replace("Inc.", "");
         }
+
       } catch (e) {
         throw new Error(e);
       }
       try {
         timeSeriesResponse = await AlphaVantageService.fetchCompanyDailyTimeSeries(symbol);
-        console.log(timeSeriesResponse);
-        if (timeSeriesResponse) {
-          ExtractData.extractCompanyTimeSeriesData(timeSeriesResponse);
+        if (timeSeriesResponse.data && !timeSeriesResponse.data.hasOwnProperty("Note")) {
+          timeSeriesExtractedData = ExtractData.extractCompanyTimeSeriesData(timeSeriesResponse);
+          companyData = {...companyData, ...timeSeriesExtractedData};
         }
       } catch (e) {
         throw new Error(`Error while time series requesting ${e}`);
       }
 
       try {
-        logoAndDomainResponse = await ClearBitService.fetchCompanyLogoAndDomain(name);
-        if (logoAndDomainResponse) {
-          logoAndDomainExtractedData = extractCompanyLogoAndDomain(logoAndDomainResponse)
+        if (name) {
+          logoAndDomainResponse = await ClearBitService.fetchCompanyLogoAndDomain(name);
+          if (logoAndDomainResponse) {
+            logoAndDomainExtractedData = extractCompanyLogoAndDomain(logoAndDomainResponse);
+            companyData = {...companyData, ...logoAndDomainExtractedData};
+          }
         }
       } catch (e) {
         throw new Error(`Error while login domain requesting ${e}`);
       }
-
-      const date = moment(new Date()).format("YYYY-MM-DD");
-      const companyData = {
-        date,
-        ...mainInfoExtractedData,
-        ...timeSeriesExtractedData,
-        ...logoAndDomainExtractedData
-      };
-
-      companies.push(companyData);
-
+      if (companyData) {
+        companies.push(companyData);
+      }
     });
     return companies;
   }

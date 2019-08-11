@@ -10,10 +10,20 @@ const styles = () => ({
     height: "64px",
     width: "64px",
   },
-  content: {},
-  contentTitle: {},
+  content: {
+    width: "100%"
+  },
+  title: {
+    display: "flex",
+    justifyContent: "space-between"
+  },
   locationDates: {},
   stocks: {},
+  deleteButton: {
+    marginLeft: "5px",
+    display: "flex",
+    justifySelf: "flex-end"
+  },
   companyCard: {
     maxHeight: "64px",
     display: "flex",
@@ -24,7 +34,6 @@ const styles = () => ({
 });
 const Company = (props) => {
   const {company, classes} = props;
-  console.error(company);
   return (
     <div className={classes.companyCard}>
       <div className={classes.logoWrapper}>
@@ -34,9 +43,14 @@ const Company = (props) => {
       <div className={classes.content}>
 
         <div className={classes.title}>
-          <b className={classes.contentTitle}>{company.name} </b>
-          <span> {company.symbol} </span>
-          <small>{company.domain}  </small>
+          <div>
+            <b className={classes.contentTitle}>{company.name} </b>
+            <span> {company.symbol} </span>
+            <small>{company.domain}  </small>
+          </div>
+          <div className={classes.deleteButton}
+               onClick={() => props.deleteCompany(company)}>X
+          </div>
         </div>
         <div className={classes.locationDates}>
           <span> {company.region} </span>
@@ -44,12 +58,14 @@ const Company = (props) => {
           <span> {company.timeZone} </span>
         </div>
         <div className={classes.stocks}>
-          <span> {company.close} </span>
+          <span><b> {company.close} </b> </span>
+          {company.close && <span> {company.currency} </span>}
           <span> {company.difference} </span>
-          {company.closeDate && <span> Closed: </span>}
+          {company.percentage && <span> {company.percentage}% </span>}
+          {company.sessionDate && <span> Closed: {company.sessionDate} </span>}
         </div>
       </div>
-      <span onClick={() => props.deleteCompany(company)}>x</span>
+
     </div>
 
   )

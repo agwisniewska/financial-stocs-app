@@ -1,16 +1,20 @@
 import React, {Component} from "react";
-import AlphaVantageService from "../services/alpha-vantage/index"
 import Grid from '@material-ui/core/Grid';
 import PropTypes from "prop-types";
 import Company from "./Company";
 import {withStyles} from "@material-ui/styles";
-import RequestStatuses from "../consts/requestStatuses"
+import AlphaVantageService from "../services/alpha-vantage";
+import Helper from "../services";
+import Button from "@material-ui/core/Button/Button";
 
 const styles = () => ({
   paper: {
     padding: '1rem',
     textAlign: 'center',
   },
+  container: {
+    padding: "2rem"
+  }
 });
 
 class CompaniesList extends Component {
@@ -19,20 +23,18 @@ class CompaniesList extends Component {
     this.state = {
       companies: [],
       errorMessage: "",
-      requestStatus: RequestStatuses.NOT_SENT
+      requestSent: false,
+      keysAvailable: false
     }
   }
 
   componentDidMount() {
-    let companies = null;
-    try {
-      this.setState({requestStatus: RequestStatuses.IN_PROGRESS});
-      companies = AlphaVantageService.populateCompanyData();
-      this.setState({requestStatus: RequestStatuses.SUCCESS, companies: companies});
-
-    } catch (e) {
-      this.setState({errorMessage:e.message, requestStatus: RequestStatuses.FAILURE})
-    }
+    const keysAvailable = Helper.getLocalStorageKeys();
+    this.setState({keysAvailable: keysAvailable.length});
+    AlphaVantageService.populateCompanyData().then(companies => {
+      console.error('companies', companies);
+      this.setState({requestSent: true, companies: companies ? [...companies] : []});
+    })
   }
 
   deleteCompany = (value) => {
@@ -41,8 +43,11 @@ class CompaniesList extends Component {
     localStorage.removeItem(value.symbol);
   };
 
+  redirect = () => {
+    this.props.history.push("/track-company")
+  };
+
   render() {
-    const {classes} = this.props;
     return (<Grid
       container
       direction="row"
@@ -52,11 +57,18 @@ class CompaniesList extends Component {
         return (<Grid key={index}
                       item
                       xs={12}
-                      sm={3}>
-            <Company deleteCompany={this.deleteCompany} company={company}/>
+                      sm={12}>
+          <Company deleteCompany={this.deleteCompany}
+                   company={company}/>
         </Grid>)
       })}
-      {this.state.errorMessage}
+      {this.state.requestSent && this.state.keysAvailable && (this.state.companies.length === 0) &&
+      <p> No results found </p>}
+      {this.state.requestSent && !this.state.keysAvailable && !this.state.companies.length &&
+      <p> No tracked companies yet.
+        <Button variant="contained"
+                color="primary"
+                onClick={this.redirect}> Start tracking your company </Button></p>}
     </Grid>);
   }
 }
