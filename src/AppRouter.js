@@ -1,8 +1,7 @@
-import {BrowserRouter as Router, Link, Route} from "react-router-dom";
+import React from "react";
+import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import CompaniesList from "./components/CompaniesList";
 import TrackCompany from "./components/TrackCompany";
-// import saveSearchedSymbolsInLocalStorage from "./services/internal/index"
-import React from "react";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
@@ -42,27 +41,28 @@ const AppRouter = (props) => {
 
     <Router>
       <div>
-        <AppBar className={classes.root} position="static">
+        <AppBar className={classes.root}
+                position="static">
           <Toolbar>
             <Button color="inherit">
               <Link className={classes.link}
                     to="/track-company">Track my company</Link></Button>
             <div>
 
-            <Button>
-              <Link className={classes.link}
-                    to="/companies/">Companies</Link></Button>
+              <Button>
+                <Link className={classes.link}
+                      to="/companies/">Companies</Link></Button>
 
             </div>
           </Toolbar>
         </AppBar>
         {routes.map((route, index) => (
-          <Route
-            key={index}
-            path={route.path}
-            exact={route.exact}
-            render={route.render}
-          />))}
+            <Route
+              key={index}
+              path={route.path}
+              exact={route.exact}
+              render={route.render}
+            />))}
       </div>
     </Router>
   )

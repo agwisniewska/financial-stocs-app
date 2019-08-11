@@ -1,11 +1,10 @@
 import React, {Component} from "react";
 import AlphaVantageService from "../services/alpha-vantage/index"
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from "prop-types";
 import Company from "./Company";
 import {withStyles} from "@material-ui/styles";
-
+import RequestStatuses from "../consts/requestStatuses"
 
 const styles = () => ({
   paper: {
@@ -19,19 +18,21 @@ class CompaniesList extends Component {
     super(props);
     this.state = {
       companies: [],
-      errorMessage: ""
+      errorMessage: "",
+      requestStatus: RequestStatuses.NOT_SENT
     }
   }
 
   componentDidMount() {
     let companies = null;
     try {
+      this.setState({requestStatus: RequestStatuses.IN_PROGRESS});
       companies = AlphaVantageService.populateCompanyData();
+      this.setState({requestStatus: RequestStatuses.SUCCESS, companies: companies});
+
     } catch (e) {
-      this.setState({errorMessage:e.message})
+      this.setState({errorMessage:e.message, requestStatus: RequestStatuses.FAILURE})
     }
-    this.setState({companies: companies});
-    console.error(this.state.companies);
   }
 
   deleteCompany = (value) => {
