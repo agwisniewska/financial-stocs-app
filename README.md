@@ -1,5 +1,25 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+###Note!: I had troubles with setting state in componentDidMount, and to be honest because of lack of everyday
+experience with React (or maybe because of another bug in logic...), I don't know how to resolve my problem.
+I want to go trough documentation carefully, and I should update/fix this bug, but because of my personal obligations I am not able to add it very quickly and send you fully ready.
+I am not satisfied with this task, and although I don't assume you accept my application, any suggestions or comment are highly appreciated
+Thank you.
+
+## Before Start:
+
+Remember to add you own env file:
+
+``` touch .env```
+### Put this into your ```.env ``` file
+
+```
+REACT_APP_API_KEY=demo_key
+REACT_APP_ALPHA_API_URL=https://www.alphavantage.co/
+REACT_APP_CLEARBIT_API_URL=https://autocomplete.clearbit.com/
+```
+
+
 ## Available Scripts
 
 In the project directory, you can run:
@@ -8,6 +28,7 @@ In the project directory, you can run:
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
 
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.

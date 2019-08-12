@@ -4,8 +4,8 @@ import ExtractData from "./extractData";
 import extractCompanyLogoAndDomain from "../clearbit/extractData";
 import moment from "moment";
 
-const API_KEY = '8QRXF51LC7X7XHDMS789';
-const API_URL = 'https://www.alphavantage.co/';
+const API_KEY = process.env.REACT_APP_API_KEY;
+const API_URL = process.env.REACT_APP_ALPHA_API_URL;
 
 const AlphaVantageService = {
   fetchCompanyFinancialDataFromStock: (symbol) => {

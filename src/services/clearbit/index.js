@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const API_URL = 'https://autocomplete.clearbit.com/';
-
+const API_URL = process.env.REACT_APP_CLEARBIT_API_URL;
 
 const ClearBitService = {
   fetchCompanyLogoAndDomain: (query) => {
