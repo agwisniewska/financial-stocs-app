@@ -37,8 +37,8 @@ const Company = (props) => {
   return (
     <div className={classes.companyCard}>
       <div className={classes.logoWrapper}>
-        <img className={classes.logo}
-             src={company.logo}/>
+        {company && company.logo && <img className={classes.logo}
+                                         src={company.logo}/>}
       </div>
       <div className={classes.content}>
 

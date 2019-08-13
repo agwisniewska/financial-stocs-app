@@ -3,9 +3,9 @@ import Grid from '@material-ui/core/Grid';
 import PropTypes from "prop-types";
 import Company from "./Company";
 import {withStyles} from "@material-ui/styles";
-import AlphaVantageService from "../services/alpha-vantage";
-import Helper from "../services";
 import Button from "@material-ui/core/Button/Button";
+import ExtractData from "../services/alpha-vantage/extractData";
+import ClearBitExtractData from "../services/clearbit/extractData";
 
 const styles = () => ({
   paper: {
@@ -29,12 +29,28 @@ class CompaniesList extends Component {
   }
 
   componentDidMount() {
-    const keysAvailable = Helper.getLocalStorageKeys();
-    this.setState({keysAvailable: keysAvailable.length});
-    AlphaVantageService.populateCompanyData().then(companies => {
-      console.error('companies', companies);
-      this.setState({requestSent: true, companies: companies ? [...companies] : []});
-    })
+    const localStorageSymbols = Object.keys(localStorage);
+    this.setState(() => ({keysAvailable: localStorageSymbols.length}));
+    let companies = [];
+
+    localStorageSymbols.forEach(async (symbol) => {
+      const formattedSymbol = symbol.toUpperCase();
+      let companyData = null;
+      companyData = await ExtractData.addMainCompanyInfoToCompany(companyData, formattedSymbol);
+      companyData = await ExtractData.addTimeSeriesToCompany(companyData, formattedSymbol);
+      if (companyData && companyData.name) {
+        let name = companyData.name.replace(" L.P. ", "").replace("Inc.", "");
+        companyData = await ClearBitExtractData.addLogoAndDomainToCompany(companyData, name);
+      }
+
+      if (companyData) {
+        companies.push(companyData);
+        // TODO: how to do it properly outside forEach...
+        this.setState(() => ({companies: companies, requestSent: true}))
+      }
+    });
+
+
   }
 
   deleteCompany = (value) => {

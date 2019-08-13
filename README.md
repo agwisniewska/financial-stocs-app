@@ -1,10 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-###Note!: I had troubles with setting state in componentDidMount, and to be honest because of lack of everyday
-experience with React (or maybe because of another bug in logic...), I don't know how to resolve my problem.
-I want to go trough documentation carefully, and I should update/fix this bug, but because of my personal obligations I am not able to add it very quickly and send you fully ready.
-I am not satisfied with this task, and although I don't assume you accept my application, any suggestions or comment are highly appreciated
-Thank you.
+###Note!:
+I added a small improvement and because of that I am able to setState and display component in UI. But for now
+it's happening inside forEach loop, I know that it's not efficient, and I am looking for another solution.
 
 ## Before Start:
 
