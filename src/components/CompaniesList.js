@@ -50,8 +50,8 @@ class CompaniesList extends Component {
       }
     });
 
-
   }
+
 
   deleteCompany = (value) => {
     const filteredCompanies = this.state.companies.filter(company => company.symbol !== value.symbol);
@@ -80,7 +80,7 @@ class CompaniesList extends Component {
       })}
       {this.state.requestSent && this.state.keysAvailable && (this.state.companies.length === 0) &&
       <p> No results found </p>}
-      {this.state.requestSent && !this.state.keysAvailable && !this.state.companies.length &&
+      {!this.state.requestSent && !this.state.keysAvailable && !this.state.companies.length &&
       <p> No tracked companies yet.
         <Button variant="contained"
                 color="primary"

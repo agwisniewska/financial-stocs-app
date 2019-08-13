@@ -25,8 +25,8 @@ const ExtractData = {
       if (mainInfoResponse && mainInfoResponse.data && !mainInfoResponse.data.hasOwnProperty("Note")) {
         mainInfoExtractedData = ExtractData.extractMainCompanyInformation(mainInfoResponse);
         date = moment(new Date()).format("YYYY-MM-DD");
-        return {date: date, ...companyData, ...mainInfoExtractedData};
       }
+      return {date: date, ...companyData, ...mainInfoExtractedData};
     } catch (e) {
       throw new Error(`Error while main info requesting ${e}`);
     }
@@ -55,9 +55,8 @@ const ExtractData = {
       timeSeriesResponse = await AlphaVantageService.fetchCompanyDailyTimeSeries(symbol);
       if (timeSeriesResponse && timeSeriesResponse.data && !timeSeriesResponse.data.hasOwnProperty("Note")) {
         timeSeriesExtractedData = ExtractData.extractCompanyTimeSeriesData(timeSeriesResponse);
-        debugger;
-        return {...companyData, ...timeSeriesExtractedData};
       }
+      return {...companyData, ...timeSeriesExtractedData};
     } catch (e) {
       throw new Error(`Error while time series requesting ${e}`);
     }
