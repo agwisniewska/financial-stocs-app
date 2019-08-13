@@ -1,6 +1,6 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-###Note!:
+### Note!:
 I added a small improvement and because of that I am able to setState and display component in UI. But for now
 it's happening inside forEach loop, I know that it's not efficient, and I am looking for another solution.
 
